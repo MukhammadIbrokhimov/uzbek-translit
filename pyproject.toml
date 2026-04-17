@@ -1,0 +1,87 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "uzbek-translit"
+version = "0.1.0"
+description = "FastAPI service for transliterating Uzbek between Latin and Cyrillic scripts."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Mukhammad Ibrokhimov", email = "contact@ibrokhimov.de" },
+]
+keywords = ["uzbek", "transliteration", "latin", "cyrillic", "nlp", "fastapi"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+    "ruff>=0.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/MukhammadIbrokhimov/uzbek-translit"
+Repository = "https://github.com/MukhammadIbrokhimov/uzbek-translit"
+Issues = "https://github.com/MukhammadIbrokhimov/uzbek-translit/issues"
+
+[project.scripts]
+uzbek-translit-serve = "uzbek_translit.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/uzbek_translit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "RUF",  # ruff-specific
+    "S",    # flake8-bandit (security)
+    "N",    # pep8-naming
+]
+ignore = [
+    "E501",   # long lines — the transliteration dicts are data, not code
+    "N806",   # the existing dicts use UPPERCASE as module-level constants
+    "RUF001", # ambiguous unicode characters — unavoidable in this domain
+    "RUF002", # ambiguous unicode characters in docstrings
+    "RUF003", # ambiguous unicode characters in comments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # assert is fine in tests
+"src/uzbek_translit/transliterate.py" = [
+    "E741",   # ambiguous variable names (x in lambdas) — this is legacy domain code
+    "UP031",  # legacy % formatting in regex-heavy code; converting risks behaviour changes
+]
+
+[tool.ruff.format]
+quote-style = "double"
